@@ -146,24 +146,48 @@
         }
         
         .horizontal-text {
-            padding: 30px 60px;
-            background: #fff9f9 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2" fill="%23d4342d" opacity="0.1"/></svg>') repeat;
-            border: 2px solid #d4342d;
-            border-radius: 5px;
-            margin: 20px auto;
+            padding: 40px 80px;
+            margin: 30px auto;
             position: relative;
-            max-width: 80%;
-            box-shadow: 0 4px 8px rgba(212, 52, 45, 0.1);
+            max-width: 70%;
+            background: linear-gradient(to bottom, 
+                rgba(255,249,249,1) 0%,
+                rgba(255,245,245,0.95) 100%);
+            border: none;
+            box-shadow: 
+                0 0 0 2px #d4342d,
+                0 0 0 6px rgba(212, 52, 45, 0.1),
+                5px 5px 15px rgba(0, 0, 0, 0.1);
         }
         
+        .horizontal-text p {
+            font-family: "Ma Shan Zheng", "Noto Serif SC", "楷体", serif;
+            font-size: 64px !important;
+            font-weight: 900;
+            line-height: 1.4;
+            letter-spacing: 0.3em;
+            margin: 0;
+            padding: 0;
+            color: #d4342d;
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.1),
+                -1px -1px 2px rgba(212, 52, 45, 0.2);
+            transform-origin: center;
+            animation: brushWriteHorizontal 1.2s ease-out forwards;
+        }
+        
+        /* 添加装饰元素 */
         .horizontal-text::before,
         .horizontal-text::after {
-            content: '❀';
-            color: #d4342d;
-            font-size: 24px;
+            content: '';
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path d="M20 0 L40 20 L20 40 L0 20 Z" fill="%23d4342d"/></svg>');
+            background-size: contain;
+            opacity: 0.2;
         }
         
         .horizontal-text::before {
@@ -345,14 +369,16 @@
 
         /* 添加灯笼动画 */
         @keyframes lanternSwing {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
+            0% { transform: rotate(-3deg) translateY(0); }
+            25% { transform: rotate(0deg) translateY(-2px); }
+            50% { transform: rotate(3deg) translateY(0); }
+            75% { transform: rotate(0deg) translateY(-2px); }
+            100% { transform: rotate(-3deg) translateY(0); }
         }
 
         .couplet-container::before,
         .couplet-container::after {
-            animation: lanternSwing 3s ease-in-out infinite;
-            transform-origin: top center;
+            animation: lanternSwing 4s ease-in-out infinite;
         }
 
         /* 优化按钮样式 */
@@ -406,38 +432,15 @@
         }
 
         /* 优化字体效果 */
-        .horizontal-text p {
-            font-family: "Noto Serif SC", "楷体", "STKaiti", KaiTi, serif;
-            font-weight: 900;
-            font-size: 48px !important;
-            letter-spacing: 0.2em;
-            text-shadow: 
-                2px 2px 0 rgba(212, 52, 45, 0.1),
-                -2px -2px 0 rgba(212, 52, 45, 0.1);
-            background: linear-gradient(45deg, #d4342d, #b62d27);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            padding: 10px 0;
-        }
-
-        .horizontal-text p::after {
-            content: "";
+        .horizontal-text p::before {
+            content: attr(data-text);
             position: absolute;
-            top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, 
-                rgba(212, 52, 45, 0.1) 25%, 
-                transparent 25%, 
-                transparent 75%, 
-                rgba(212, 52, 45, 0.1) 75%
-            );
-            background-size: 4px 4px;
-            mix-blend-mode: overlay;
-            pointer-events: none;
+            top: 0;
+            z-index: -1;
+            -webkit-text-stroke: 2px rgba(212, 52, 45, 0.1);
+            text-stroke: 2px rgba(212, 52, 45, 0.1);
+            opacity: 0.5;
         }
 
         .vertical-text {
@@ -598,11 +601,361 @@
         /* 添加墨迹晕染效果 */
         .ink-splash {
             position: absolute;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(212, 52, 45, 0.1) 0%, transparent 70%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(
+                circle,
+                rgba(212, 52, 45, 0.1) 0%,
+                rgba(212, 52, 45, 0.05) 50%,
+                transparent 70%
+            );
+            transform: scale(0);
+            animation: inkSpread 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes inkSpread {
+            0% {
+                transform: scale(0);
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* 添加页面整体渐入动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 0.8s ease-out;
+            max-width: 900px;  /* 稍微加宽一些 */
+            padding: 40px;
+            background: linear-gradient(135deg, #fff 0%, #fff9f9 100%);
+            box-shadow: 
+                0 10px 30px rgba(212, 52, 45, 0.1),
+                0 1px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 优化输入区域 */
+        .input-section {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(212, 52, 45, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .input-section:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 52, 45, 0.08);
+        }
+
+        input {
+            font-size: 18px;
+            padding: 15px;
+            border: 2px solid rgba(212, 52, 45, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-family: "楷体", KaiTi, serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #d4342d;
+            box-shadow: 0 0 0 3px rgba(212, 52, 45, 0.1);
+        }
+
+        /* 优化按钮效果 */
+        button {
+            background: linear-gradient(145deg, #d4342d, #c02d27);
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 52, 45, 0.2);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        button:hover::after {
+            opacity: 1;
+        }
+
+        /* 优化加载动画 */
+        .loading {
+            margin: 40px 0;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border-width: 5px;
+            animation: loadingSpin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        /* 优化历史记录区域 */
+        .history {
+            margin-top: 50px;
+            background: linear-gradient(135deg, #fff9f9 0%, #fff 100%);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(212, 52, 45, 0.05);
+        }
+
+        .history-item {
+            padding: 20px;
+            margin: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 52, 45, 0.1);
+        }
+
+        /* 添加响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .horizontal-text p {
+                font-size: 42px !important;
+            }
+            
+            .vertical-text {
+                font-size: 32px;
+                padding: 30px 25px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .controls button {
+                width: 100%;
+            }
+        }
+
+        /* 添加工具提示 */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]:hover::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 14px;
+            border-radius: 6px;
+            white-space: nowrap;
             pointer-events: none;
-            z-index: -1;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        /* 添加成功提示动画 */
+        @keyframes successPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            animation: successPop 0.5s ease forwards;
+        }
+
+        /* 优化毛笔书写动画 */
+        @keyframes brushWriteHorizontal {
+            0% {
+                opacity: 0;
+                transform: scale(1.1) translateY(-10px);
+            }
+            30% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 优化竖联动画效果 */
+        .vertical-text {
+            font-family: "Zhi Mang Xing", "Ma Shan Zheng", "楷体", serif;
+            font-size: 42px;
+            color: #d4342d;
+            padding: 50px 35px;
+            background: #fff9f9;
+            border: 2px solid #d4342d;
+            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 优化字符书写动画 */
+        .vertical-text span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: brushWriteChar 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes brushWriteChar {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 优化灯笼动画 */
+        @keyframes lanternSwing {
+            0% { transform: rotate(-3deg) translateY(0); }
+            25% { transform: rotate(0deg) translateY(-2px); }
+            50% { transform: rotate(3deg) translateY(0); }
+            75% { transform: rotate(0deg) translateY(-2px); }
+            100% { transform: rotate(-3deg) translateY(0); }
+        }
+
+        .couplet-container::before,
+        .couplet-container::after {
+            animation: lanternSwing 4s ease-in-out infinite;
+        }
+
+        /* 优化墨迹效果 */
+        .ink-splash {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(
+                circle,
+                rgba(212, 52, 45, 0.1) 0%,
+                rgba(212, 52, 45, 0.05) 50%,
+                transparent 70%
+            );
+            transform: scale(0);
+            animation: inkSpread 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes inkSpread {
+            0% {
+                transform: scale(0);
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* 更新生成结果的显示动画 */
+        .result-wrapper {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: resultFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes resultFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 优化加载动画 */
+        .loading-spinner {
+            animation: loadingSpin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        @keyframes loadingSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 优化按钮点击效果 */
+        button {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* 优化历史记录项目动画 */
+        .history-item {
+            transform: translateY(0);
+            opacity: 0;
+            animation: historyItemFadeIn 0.5s ease forwards;
+            animation-delay: calc(var(--item-index) * 0.1s);
+        }
+
+        @keyframes historyItemFadeIn {
+            from {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -662,13 +1015,15 @@
         function updateHistoryDisplay() {
             const history = JSON.parse(localStorage.getItem('coupletHistory') || '[]');
             const historyList = document.getElementById('history-list');
-            historyList.innerHTML = history.map(item => `
-                <div class="history-item">
-                    <p>主题：${item.theme}</p>
-                    <p>横批：${item.horizontal}</p>
-                    <p>上联：${item.upper}</p>
-                    <p>下联：${item.lower}</p>
-                    <small>创作时间：${item.date}</small>
+            historyList.innerHTML = history.map((item, index) => `
+                <div class="history-item" style="--item-index: ${index}">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0; color: #d4342d;">主题：${item.theme}</h4>
+                        <small style="color: #666;">${item.date}</small>
+                    </div>
+                    <p style="margin: 10px 0; font-size: 1.2em;">${item.horizontal}</p>
+                    <p style="margin: 5px 0;">${item.upper}</p>
+                    <p style="margin: 5px 0;">${item.lower}</p>
                 </div>
             `).join('');
         }
@@ -732,37 +1087,13 @@
                 });
 
                 // 显示结果
-                document.getElementById('result').innerHTML = `
-                    <div class="result-wrapper">
-                        <div class="horizontal-text">
-                            <p style="margin: 0;">${horizontal}</p>
-                        </div>
-                        <div class="couplet-container">
-                            <div class="vertical-text" data-text="${upper}" style="animation: slideInLeft 0.8s ease-out">${upper}</div>
-                            <div class="vertical-text" data-text="${lower}" style="animation: slideInRight 0.8s ease-out">${lower}</div>
-                        </div>
-                    </div>
-                `;
+                updateResult(horizontal, upper, lower);
                 
                 // 保存到历史记录
                 saveToHistory(theme, horizontal, upper, lower);
                 
                 // 显示控制按钮
                 document.getElementById('controls').style.display = 'flex';
-
-                // 添加入场动画
-                const style = document.createElement('style');
-                style.textContent = `
-                    @keyframes slideInLeft {
-                        from { transform: translateX(-100px); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                    @keyframes slideInRight {
-                        from { transform: translateX(100px); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                `;
-                document.head.appendChild(style);
             } catch (error) {
                 console.error('Error:', error);
                 alert('生成春联时出错，请稍后重试！');
@@ -775,9 +1106,10 @@
         function saveCouplet() {
             html2canvas(document.getElementById('result')).then(canvas => {
                 const link = document.createElement('a');
-                link.download = '春联.png';
+                link.download = `喵哥春联_${new Date().getTime()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
+                showSuccessMessage('春联已保存！');
             });
         }
 
@@ -809,42 +1141,83 @@
             updateHistoryDisplay();
         }
 
-        // 在生成春联时添加字符动画
+        // 更新显示结果的代码
+        function updateResult(horizontal, upper, lower) {
+            document.getElementById('result').innerHTML = `
+                <div class="result-wrapper">
+                    <div class="horizontal-text">
+                        <p>${horizontal}</p>
+                    </div>
+                    <div class="couplet-container">
+                        <div class="vertical-text">
+                            ${wrapCharsWithAnimation(upper)}
+                        </div>
+                        <div class="vertical-text">
+                            ${wrapCharsWithAnimation(lower)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 优化字符动画包装函数
         function wrapCharsWithAnimation(text) {
             return text.split('').map((char, index) => 
-                `<span style="--char-index: ${index};">${char}</span>`
+                `<span style="animation-delay: ${index * 0.1}s">${char}</span>`
             ).join('');
         }
 
-        // 更新显示结果的代码
-        document.getElementById('result').innerHTML = `
-            <div class="result-wrapper">
-                <div class="horizontal-text">
-                    <p style="margin: 0;">${wrapCharsWithAnimation(horizontal)}</p>
-                </div>
-                <div class="couplet-container">
-                    <div class="vertical-text" data-text="${upper}" style="animation: slideInLeft 0.8s ease-out">
-                        ${wrapCharsWithAnimation(upper)}
-                    </div>
-                    <div class="vertical-text" data-text="${lower}" style="animation: slideInRight 0.8s ease-out">
-                        ${wrapCharsWithAnimation(lower)}
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // 添加墨迹晕染效果
+        // 优化墨迹效果
         function addInkSplash(event) {
             const splash = document.createElement('div');
             splash.className = 'ink-splash';
-            splash.style.left = (event.pageX - 50) + 'px';
-            splash.style.top = (event.pageY - 50) + 'px';
-            document.body.appendChild(splash);
-            setTimeout(() => splash.remove(), 2000);
+            const rect = event.target.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            splash.style.left = `${x - 60}px`;
+            splash.style.top = `${y - 60}px`;
+            event.target.appendChild(splash);
+            setTimeout(() => splash.remove(), 1000);
         }
 
         document.querySelectorAll('.vertical-text, .horizontal-text')
             .forEach(el => el.addEventListener('mousemove', addInkSplash));
+
+        // 添加成功提示函数
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = message;
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 2000);
+        }
+
+        // 添加输入建议
+        const suggestions = ['新年', '福气', '吉祥', '春节', '家庭', '事业', '学业', '健康', '平安'];
+        const themeInput = document.getElementById('theme');
+
+        themeInput.addEventListener('focus', () => {
+            const datalist = document.createElement('datalist');
+            datalist.id = 'theme-suggestions';
+            suggestions.forEach(suggestion => {
+                const option = document.createElement('option');
+                option.value = suggestion;
+                datalist.appendChild(option);
+            });
+            themeInput.setAttribute('list', 'theme-suggestions');
+            document.body.appendChild(datalist);
+        });
+
+        // 添加键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && document.activeElement === themeInput) {
+                generateCouplet();
+            }
+        });
     </script>
     
     <!-- 添加html2canvas库用于生成图片 -->
