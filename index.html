@@ -146,48 +146,45 @@
         }
         
         .horizontal-text {
-            padding: 40px 80px;
+            padding: 40px 60px;
             margin: 30px auto;
             position: relative;
             max-width: 70%;
-            background: linear-gradient(to bottom, 
-                rgba(255,249,249,1) 0%,
-                rgba(255,245,245,0.95) 100%);
-            border: none;
+            background: #fff9f9;
+            border: 3px solid #d4342d;
+            border-radius: 8px;
             box-shadow: 
-                0 0 0 2px #d4342d,
-                0 0 0 6px rgba(212, 52, 45, 0.1),
-                5px 5px 15px rgba(0, 0, 0, 0.1);
+                0 4px 15px rgba(212, 52, 45, 0.15),
+                0 0 0 1px rgba(212, 52, 45, 0.1);
         }
         
         .horizontal-text p {
-            font-family: "Ma Shan Zheng", "Noto Serif SC", "楷体", serif;
-            font-size: 64px !important;
+            font-family: "Ma Shan Zheng", "STKaiti", "楷体", serif;
+            font-size: 72px !important;
             font-weight: 900;
-            line-height: 1.4;
-            letter-spacing: 0.3em;
+            line-height: 1.2;
+            letter-spacing: 0.4em;
             margin: 0;
-            padding: 0;
+            padding: 0 20px;
             color: #d4342d;
+            text-align: center;
+            position: relative;
             text-shadow: 
-                2px 2px 4px rgba(0, 0, 0, 0.1),
-                -1px -1px 2px rgba(212, 52, 45, 0.2);
-            transform-origin: center;
-            animation: brushWriteHorizontal 1.2s ease-out forwards;
+                2px 2px 4px rgba(212, 52, 45, 0.2),
+                -1px -1px 1px rgba(255, 255, 255, 0.7);
+            animation: brushStroke 1.2s ease-out forwards;
         }
         
         /* 添加装饰元素 */
         .horizontal-text::before,
         .horizontal-text::after {
-            content: '';
+            content: '✧';
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path d="M20 0 L40 20 L20 40 L0 20 Z" fill="%23d4342d"/></svg>');
-            background-size: contain;
-            opacity: 0.2;
+            font-size: 32px;
+            color: #d4342d;
+            opacity: 0.6;
         }
         
         .horizontal-text::before {
@@ -286,7 +283,7 @@
         /* 添加装饰元素 */
         .couplet-container::before,
         .couplet-container::after {
-            content: '🏮';
+            content: '��';
             font-size: 40px;
             position: absolute;
             top: -20px;
@@ -469,9 +466,20 @@
 
         /* 添加毛笔效果 */
         @keyframes brushStroke {
-            0% { transform: scale(1.02) rotate(0.5deg); }
-            50% { transform: scale(0.98) rotate(-0.5deg); }
-            100% { transform: scale(1) rotate(0deg); }
+            0% {
+                opacity: 0;
+                transform: scale(1.1) translateY(-10px);
+                filter: blur(4px);
+            }
+            50% {
+                opacity: 0.7;
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0);
+            }
         }
 
         .horizontal-text p,
@@ -1146,7 +1154,7 @@
             document.getElementById('result').innerHTML = `
                 <div class="result-wrapper">
                     <div class="horizontal-text">
-                        <p>${horizontal}</p>
+                        <p data-text="${horizontal}">${horizontal}</p>
                     </div>
                     <div class="couplet-container">
                         <div class="vertical-text">
@@ -1158,6 +1166,9 @@
                     </div>
                 </div>
             `;
+
+            // 添加墨迹效果监听
+            document.querySelector('.horizontal-text').addEventListener('mousemove', addInkSplash);
         }
 
         // 优化字符动画包装函数
